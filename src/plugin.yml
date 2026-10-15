@@ -1,0 +1,6 @@
+name: BuldakAI
+version: 1.0.0
+main: pl.prepsmp.buldakai.BuldakAI
+api-version: '1.21'
+description: Chat with Buldak from Minecraft chat using an OpenAI-compatible API.
+author: prepSMP
