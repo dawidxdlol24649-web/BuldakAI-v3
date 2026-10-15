@@ -1,0 +1,54 @@
+name: Build BuldakAI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "*.zip"
+      - ".github/workflows/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extract ZIP
+        run: |
+          mkdir source
+          ZIP_FILE=$(find . -maxdepth 1 -type f -name "*.zip" | head -n 1)
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Nie znaleziono ZIP-a w głównym folderze repozytorium."
+            exit 1
+          fi
+          unzip -q "$ZIP_FILE" -d source
+          find source -maxdepth 4 -type f | head -100
+
+      - name: Build plugin
+        run: |
+          BUILD_FILE=$(find source -type f -name "build.gradle.kts" | head -n 1)
+          if [ -z "$BUILD_FILE" ]; then
+            echo "Nie znaleziono build.gradle.kts w ZIP-ie."
+            exit 1
+          fi
+          PROJECT_DIR=$(dirname "$BUILD_FILE")
+          gradle -p "$PROJECT_DIR" build
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuldakAI-jar
+          path: source/**/build/libs/*.jar
+          if-no-files-found: error
+          
