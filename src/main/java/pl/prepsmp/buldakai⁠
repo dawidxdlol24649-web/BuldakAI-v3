@@ -1,0 +1,16 @@
+package pl.prepsmp.buldakai;
+
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class BuldakAI extends JavaPlugin {
+
+    @Override
+    public void onEnable() {
+        getLogger().info("BuldakAI wlaczony!");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("BuldakAI wylaczony!");
+    }
+}
